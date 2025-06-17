@@ -881,13 +881,24 @@
             }
         }
 
-        // Добавляем обработчики ошибок для всех изображений при загрузке страницы
+        // Добавляем обработчики ошибок и таймаут для всех изображений при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             const images = document.querySelectorAll('.product-image');
             images.forEach(function(img) {
+                // Обработка ошибки загрузки
                 img.addEventListener('error', function() {
                     handleImageError(this);
                 });
+                // Таймаут 15 секунд на загрузку
+                let loaded = false;
+                img.addEventListener('load', function() {
+                    loaded = true;
+                });
+                setTimeout(function() {
+                    if (!loaded && img.complete === false) {
+                        handleImageError(img);
+                    }
+                }, 15000);
             });
         });
     </script>
